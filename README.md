@@ -1,2 +1,2 @@
 # web-projects
-buy and sell stocks
+wikipedia like website
