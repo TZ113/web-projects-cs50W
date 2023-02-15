@@ -1,1 +1,1 @@
-E-commerce website built with flask
+social networking website
