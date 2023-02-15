@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title%}
+    Change Password
+{% endblock %}
+
+{% block main %}
+
+    <form action="/change_psswd_check" method="post">
+        <p>Please insert your current password:<p>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" autofocus name="psswd" placeholder="Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+
+{% endblock %}

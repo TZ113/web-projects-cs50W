@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title%}
+    Otp verification
+{% endblock %}
+
+{% block main %}
+
+    <form action="/verify_email" method="post">
+        <p>A password token has been sent to the email address. Please check your mail for the confirmation, it might've found it's way to the spam folder.
+        Enter the token here:</p>
+    <div class="mb-3">
+         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" type="text" name="token" placeholder="token">
+    </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+{% endblock %}

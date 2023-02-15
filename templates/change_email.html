@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Change E-mail
+{% endblock %}
+
+{% block main %}
+
+    <form action="/change_email" method="post">
+        <p>Please insert your new e-mail address here:</p>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="newmail" name="newmail" placeholder="E-mail" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+
+{% endblock %}

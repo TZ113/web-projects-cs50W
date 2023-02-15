@@ -1,0 +1,12 @@
+cs50
+Flask
+Flask-Session
+requests
+werkzeug.security
+werkzeug.utils
+flask_mail
+validate_email
+random
+shutil
+string
+functools

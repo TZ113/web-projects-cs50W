@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title%}
+Upload
+{% endblock%}
+
+{% block main%}
+    <h1>File Upload</h1>
+<br>
+<hr>
+<br>
+    <form name ="u_form" action="/upload" enctype="multipart/form-data" method="post">
+        <div class="mb-3">
+                <input class="form-group" type="file" name="file"  id="file" accept=".txt, .doc, .pdf, .epub, .rtf, .png, .jpeg, .jpg, .gif, .bmp, .mp3, .wav, .m4a, .aac, .flac, .wma, .mp4, .avi, .mkv, .flv, .zip, .file">
+        </div>
+        <br>
+        <div class="mb-3">
+            <input class="btn btn-primary" type="button" name="u_button" value="Upload">
+        </div>
+    </form>
+    </div>
+    <progress></progress>
+
+    <script>
+
+        $(document).ready(function(){
+           $('input[name="u_button"]').on('click', function(){
+               var myfile = ($('input[name="file"]')[0].files[0]);
+               if (myfile)
+               {
+                    if (myfile.size > 101 * 1024 * 1024){alert("File is too big. Maximum size cannot exceed 101Mb."); return}
+                    $.post("/check_filenames", {filename:myfile.name}, function(response)
+                    {
+                        if (response == "exists")
+                        {
+                            if (confirm("The file already exists. Would you like to replace?") == true)
+                            {
+                                $.post("/delete_to_replace", {filename:myfile.name}, function (){
+                                $('form[name="u_form"]').submit();
+                                });
+                            }
+
+                        }
+                        else
+                        {
+                            $('form[name="u_form"]').submit();
+                        }
+                    });
+                }
+        });
+
+    $('form[name="u_form"]').on('submit', function(e){
+        $('input[name="u_button"]').off('click');
+            var formdata = new FormData($('form[name="u_form"]')[0]);
+            $.ajax({
+                // Your server script to process the upload
+                url: "/upload",
+
+                success: function (){
+                    window.location.href = "/yay";
+                },
+
+                type: 'POST',
+
+                // Form data
+                data: formdata,
+
+                // Tell jQuery not to process data or worry about content-type
+                // You *must* include these options!
+                cache: false,
+                contentType: false,
+                processData: false,
+
+                // Custom XMLHttpRequest
+                xhr: function () {
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    // For handling the progress of the upload
+                    myXhr.upload.addEventListener('progress', function (e) {
+                    if (e.lengthComputable) {
+                        $('progress').attr({
+                        value: e.loaded,
+                        max: e.total,
+                        });
+                    }
+                    }, false);
+                }
+                return myXhr;
+                }
+            });
+        return false;
+        });
+        //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously-with-jquery//
+        })
+
+    </script>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<hr>
+
+
+        <footer class="medium text-center text-muted">
+            Unsupported file types won't be uploaded. Supported extensions are .txt, .doc, .pdf, .epub, .rtf, .png, .jpeg, .jpg, .gif, .bmp, .mp3, .wav, .m4a, .aac, .flac, .wma, .mp4, .avi, .mkv, .flv, .zip.
+        </footer>
+
+
+{% endblock%}

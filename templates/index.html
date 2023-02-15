@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+
+        <table>
+            <thead>
+                <tr style = "border-bottom: 2px solid; border-color: green">
+                    <th>
+                        <form name="category_form" action="#" method="post">
+                            <select name="category" class="form-control">
+                                <option disabled selected value=''>Select Category</option>
+                                <option value="all">All</option>
+                                <option value="audio">Audio</option>
+                                <option value="video">Video</option>
+                                <option value="image">Image</option>
+                                <option value="docs">Documents</option>
+                                <option value="others">Others</option>
+                            </select>
+                        <form>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <form name="sort_form" action="#" method="post">
+                            <select name="sort" class="form-control">
+                                <option disabled selected value=''>Sort By</option>
+                                <option value="nameasc">Name: Ascending</option>
+                                <option value="namedesc">Name: Descending</option>
+                                <option value="size">Size</option>
+                                <option value="uploaded">Upload Date</option>
+                            </select>
+                        <form>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="mytable">
+                {% for row in table_index %}
+                    <tr>
+
+                        <td>{{row["filename"]}}</td>
+                        <td>{{row["size"]}}</td>
+                        <td>{{row["upload_time"]}}</td>
+                        <td>
+                            <a href="{{url_for('.download',__METHOD_OVERRIDE__='POST', filename=row.filename)}}">Download</a>
+                        </td>
+                        <td>
+                            <a href="{{url_for('.delete', filename=row.filename)}}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+            $(document).ready(function (){
+                $('select[name="sort"]').change(function(){
+                $.post("/sort", {sort:$(this).val(), category:$('select[name="category"]').val()}, function(table_data)
+                {
+                    $("#mytable").html('')
+                    for (let i in table_data)
+                    {
+                        const tr = $("<tr/>");
+                        const filename = table_data[i].filename;
+                        const size = table_data[i].size;
+                        const uploaded = table_data[i].upload_time;
+                        const download = table_data[i].download;
+                        const deletee = table_data[i].delete;
+                        tr.html(`
+                <td>${filename}</td>
+                <td>${size}</td>
+                <td>${uploaded}</td>
+                <td><a href="${download}">Download</a></td>
+                <td><a href="${deletee}">Delete</a></td>
+                `)
+                tr.appendTo($("#mytable"));
+                    }
+                });});
+
+            $('select[name="category"]').change(function (){
+                $.post("/category", {category: $(this).val()}, function (table_data) {
+                    $('select[name="sort"]').val('');
+                    $("#mytable").html('');
+                    for (let i in table_data)
+                    {
+                        const tr = $("<tr/>");
+                        const filename = table_data[i].filename;
+                        const size = table_data[i].size;
+                        const uploaded = table_data[i].upload_time;
+                        const download = table_data[i].download;
+                        const deletee = table_data[i].delete;
+                        tr.html(`
+                        <td>${filename}</td>
+                        <td>${size}</td>
+                        <td>${uploaded}</td>
+                        <td><a href="${download}">Download</td>
+                        <td><a href="${deletee}">Delete</td>
+                        `)
+                        tr.appendTo($("#mytable"));
+                    }
+                });});
+            })
+        </script>
+
+{% endblock %}
+
