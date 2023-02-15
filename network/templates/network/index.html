@@ -1,0 +1,63 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block title %}
+    All Posts
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {% if user.is_authenticated %}
+            <h5>Create New Post</h5>
+            <div class="border border-5 m-2 p-2">
+                <form action="{% url 'post' %}" method="post">
+                    {% csrf_token %}
+                    <textarea class="form-control border border-primary mb-3" rows="7" name="post" placeholder="Write your post here" required></textarea>
+                    <input type="submit" class="btn btn-primary" value="Post">
+                </form>
+            </div>
+        {% endif %}
+        {% for post in posts %}
+            <div id="post" class="border border-info p-2 m-2">
+                <h4><a id="poster" href="{% url 'profiles' post.poster_id %}">{{post.poster}}</a></h4>
+                {% if user.username == post.poster|safe %}
+                    <a id="edit_btn" href="#edit_post">Edit Post</a>
+                        <form class="border border-5 m-2 p-2" id="edit_form">
+                            {% csrf_token %}
+                            <textarea class="form-control border border-primary mb-3" rows="7" required>{{post.post}}</textarea>
+                            <input type="hidden" value="{{post.id}}">
+                            <input type="submit" class="btn btn-primary">
+                        </form>
+                {% endif %}
+                <div id="post_content">{{post.post|linebreaks}}</div>
+                <div>{{post.time}}</div>
+                <div id="likes">
+                    {% csrf_token %}
+                    <div style="display: none;">{{ post.id }}</div>
+                    {% if post.current_user_likes == True %}
+                        <i class="fa-solid fa-heart"></i> <span id="likes">{{post.total_likes}}</span>
+                    {% else %}
+                        <i class="fa-regular fa-heart"></i> <span id="likes">{{post.total_likes}}</span>
+                    {% endif %}
+                    <div style="display:none;">{{ user.username }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    <div class="pagination justify-content-center top-100">
+        <span class="page-links">
+            {% if posts.has_previous %}
+                <a href="?page={{posts.previous_page_number}}">&lt&lt Previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{posts.number }}
+            </span>
+            {% if posts.has_next %}
+                <a href="?page={{posts.next_page_number}}">Next &gt&gt</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'network/script.js' %}"></script>
+{% endblock %}

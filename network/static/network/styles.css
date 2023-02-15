@@ -1,0 +1,31 @@
+
+#edit_form {
+    display: none;
+}
+
+#poster {
+    color: black;
+}
+
+#profile_name {
+    color: #6600cc;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+i {
+    color: red;
+    cursor: pointer;
+}
+
+#post_content {
+    margin-top: 5px;
+    margin-bottom: -5px;
+}
+
+#likes {
+    margin-top: 5px;
+}
+

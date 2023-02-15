@@ -1,0 +1,79 @@
+{% extends 'network/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Profiles: {{username|title}}
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+
+    <h3><a id="profile_name" href="{% url 'profiles' id %}">{{ username }}</a></h3>
+    <div>Followed by: {{ followers }}</div>
+    <div>Following: {{ followings }}</div>
+        {% if user.is_authenticated and username|safe != user.username %}
+            {% csrf_token %}
+            {% if current_user_following == False %}
+                <button class ="btn btn-primary mt-2" id="follow" onclick="follow_unfollow(event, `{{id}}`)">Follow</button>
+            {% else %}
+                <button class="btn btn-primary mt-2" id="unfollow" onclick="follow_unfollow(event, `{{id}}`)">Unfollow</button>
+            {% endif %}
+            <hr>
+        {% elif user.is_authenticated %}
+            <hr>
+            <h5>Create New Post</h5>
+            <div class="border border-5 m-2 p-2">
+                <form action="{% url 'post' %}" method="post">
+                    {% csrf_token %}
+                    <textarea class="form-control border border-primary mb-3" rows="7" name="post" placeholder="Write your post here" required></textarea>
+                    <input type="submit" class="btn btn-primary" value="Post">
+                </form>
+            </div>
+        {% else %}
+            <hr>
+        {% endif %}
+    {% for post in posts %}
+        <div class="border border-info p-2 m-2">
+            {% if user.username == post.poster|safe %}
+                <a id="edit_btn" href="#edit_post">Edit Post</a>
+                    <form class="border border-5 m-2 p-2" id="edit_form">
+                        {% csrf_token %}
+                        <textarea class="form-control border border-primary mb-3" rows="7" required>{{post.post}}</textarea>
+                        <input type="hidden" name="post_id" value="{{post.id}}">
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+            {% endif %}
+            <div id="post_content">{{ post.post|linebreaks }}</div>
+            <div>{{ post.time}}</div>
+            <div id="likes">
+                {% csrf_token %}
+                <div style="display: none;">{{ post.id }}</div>
+                {% if post.current_user_likes == True %}
+                    <i class="fa-solid fa-heart"></i> <span id="likes">{{post.total_likes}}</span>
+                {% else %}
+                    <i class="fa-regular fa-heart"></i> <span id="likes">{{post.total_likes}}</span>
+                {% endif %}
+                <div style="display:none;">{{ user.username }}</div>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <div class="pagination justify-content-center">
+        <span class="page-links">
+            {% if posts.has_previous %}
+                <a href="?page={{posts.previous_page_number}}">Previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{posts.number}}
+            </span>
+            {% if posts.has_next %}
+                <a href="?page={{posts.next_page_number}}">Next</a>
+            {% endif %}
+        </span>
+    </div>
+
+</div>
+
+<script src="{% static 'network/script.js' %}"></script>
+{% endblock %}
