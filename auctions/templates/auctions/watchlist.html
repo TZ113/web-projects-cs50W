@@ -1,0 +1,29 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+    : Watchlist
+{% endblock %}
+
+{% block body %}
+    {% if message %}
+        <div>{{message}}</div>
+    {% else %}
+        <h2>Listings in your Watchlist</h2>
+        {% for listing in listings %}
+        <div class="holder"><a id="index_link" href="{% url 'listing' listing.id %}">
+            <div class="img-box">
+                {% if listing.photo == '' %}
+                    <div>No photo</div>
+                {% else %}
+                    <img src='{{listing.photo}}' alt='photo of listing'>
+                {% endif %}
+            </div>
+            <div class="t-box">
+                <div><h4>{{listing.title}}</h4></div>
+                <div><Strong>Price: {{listing.price}}gu</Strong></div>
+                <div style="margin:5px;">{{listing.description}}</div>
+
+            </div>
+        </a></div> 
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'auctions/layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    : {{listing.title | title}}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if listing.photo %}
+                <img src={{listing.photo}} alt='image of listing'>
+            {% else %}
+                No Photo
+            {% endif %}
+        </div>
+        <div class="col">
+            <h1>{{listing.title}}</h1>
+            <div>Current Price: {{listing.price}}gu</div>
+            <div>Description: 
+            {{listing.description}}</div>
+            <div>Details: 
+                <ul>
+                    <li>Listed BY: <a href="{% url 'maker' listing.maker_id %}">{{listing.maker}}</a></li>
+                    <li>Category: <a href="{% url 'categories' listing.category %}">{{listing.category}}</a></li>
+                    <li>Bids: {{listing.total_bids}}</li>
+                    <li>Latest Bid: {{listing.last_bidder}}</li>
+
+                </ul>
+            </div>
+            <br><br>
+            <div>        {% if listing.maker|safe == user.username %}
+                <a style="margin-right:10px;" href="{% url 'close_auction' listing.id %}">Close This Auction</a>
+                {% endif %}    
+                {% if listing.in_watchlist == False %}
+                <a href="{% url 'add_remove_watchlist' listing.id %}">Add to Watchlist</a>
+            {% else %}
+                <a href="{% url 'add_remove_watchlist' listing.id %}">Remove from Watchlist</a>
+            {% endif %}</div>
+        </div>
+    </div>
+</div>
+    <hr>
+
+    {% if listing.last_bidder|safe != '' and listing.active == False %}
+        {% if listing.last_bidder|safe == user.username %}
+            <div style="text-align:center"><strong>Congratulations! You have won this auction!</strong></div>
+        {% else %}
+            <div style="text-align:center">the auction for this listing is now closed.</div>
+        {% endif %}
+    {% else %}
+        {% if message %}
+            <div style="text-align:center;">{{message}}</div>
+        {% endif %}
+        <form action="{% url 'listing' listing.id %}" method="post">
+            {% csrf_token %}
+            {{bidform|crispy}}
+            <div style="text-align:center;"><input type="submit" value="Place Bid"></div>
+        </form>
+        <form action="{% url 'listing' listing.id %}" method="post">
+            {% csrf_token %}
+            {{commentform|crispy}}
+            <div style="text-align:center;"><input type="submit"></div>
+        </form>
+    {% endif %}
+    <hr>
+    <div>Comments by users: </div>
+    <hr>
+    <ul>
+    {% for comment in listing.comments %}
+         <li style="margin:10px;">{{comment}}</li>
+    {% endfor %}</ul>
+    </div>
+</div>
+{% endblock %}

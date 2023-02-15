@@ -1,0 +1,35 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}
+    : Catgories
+{% endblock %}
+
+{% block body %}
+    {% if listings %}
+        {% for listing in listings %}
+        <div class="holder"><a id="index_link" href="{% url 'listing' listing.id %}">
+            <div class="img-box">
+                {% if listing.photo == '' %}
+                    <div>No photo</div>
+                {% else %}
+                    <img src='{{listing.photo}}' alt='photo of listing'>
+                {% endif %}
+            </div>
+            <div class="t-box">
+                <div><h4>{{listing.title}}</h4></div>
+                <div><Strong>Price: {{listing.price}}gu</Strong></div>
+                <div style="margin:5px;">{{listing.description}}</div>
+
+            </div>
+        </a></div>
+        {% endfor %}
+    {% else %}
+    <div class="container">
+        <div class="row row-cols-3">
+        {% for category in categories %}
+            <div class="col"><div><a style="font-size:20px; color: #ffb3b3" href="{% url 'categories' category.0 %}">{{category.1}}</a></div></div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
