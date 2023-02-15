@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+    <p>
+        A share of {{api_data.name}} ({{api_data.symbol}}) costs {{api_data.price | usd}}</p>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+    <table>
+        <thead>
+            <tr style = "border-bottom: 2px solid; border-color: green">
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+                {% if row.shares > 0 %}
+                    <tr>
+                        <td>{{row.symbol}}</td>
+                        <td>{{row.name}}</td>
+                        <td>{{row.shares}}</td>
+                        <td>{{row.price | usd}}</td>
+                        <td>{{row.total | usd}}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+                <tr>
+                    <td></td><td></td><td></td><td><b>Cash</b></td><td>{{cash | usd}}</td>
+                </tr>
+                <tr>
+                    <td></td><td></td><td></td><td style="font-size: 20px"><b>Total</b></td><td>{{total | usd}}</td>
+                </tr>
+        </tbody>
+    </table>
+
+{% endblock %}
